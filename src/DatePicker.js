@@ -8,6 +8,11 @@ export default class extends React.Component {
     /**
      * dateType：日期时间的格式，Date=日期，Time=日期+时间。
      * timestamp：选中的时间。
+     * startYear：开始计算的年分。默认2010
+     * yearLength: 需要计算的年份长度。 默认40
+     * visible：是否可见。
+     * onDismiss：取消操作。
+     * onFinish：确定操作。
      */
 
     constructor(props) {
@@ -20,7 +25,7 @@ export default class extends React.Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         const items = this._getDate(nextProps.timestamp);
         this.setState({
             dateType: nextProps.dateType || "Time",
@@ -73,6 +78,20 @@ export default class extends React.Component {
     };
 
     _generateDataSource = (selectedItems) => {
+        // 年
+        const yearArr = new Array(this.props.yearLength || 40).fill(0).map((val, index) => (this.props.startYear || 2010) + index);
+        // 月
+        const monthArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+        // 日
+        const dayArr28 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28];
+        const dayArr29 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29];
+        const dayArr30 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30];
+        const dayArr31 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31];
+        // 时
+        const hourArr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
+        // 分
+        const minArr = new Array(60).fill(0).map((val, index) => index);
+
         // 日
         let dayArr;
         switch (selectedItems[1]) {
@@ -103,28 +122,16 @@ export default class extends React.Component {
     };
 
     render() {
+        const { visible, onDismiss } = this.props;
         return (
             <GeneralPicker
-                {...this.props}
                 dataSource={this.state.dataSource}
                 selectedItems={this.state.selectedItems}
+                visible={visible}
+                onDismiss={onDismiss}
                 onFinish={this._onFinish}
                 onSelectedItemChange={this._onSelectedItemChange}
             />
         );
     }
 }
-
-// 年
-const yearArr = new Array(300).fill(0).map((val, index) => 1900 + index);
-// 月
-const monthArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-// 日
-const dayArr28 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28];
-const dayArr29 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29];
-const dayArr30 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30];
-const dayArr31 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31];
-// 时
-const hourArr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
-// 分
-const minArr = new Array(60).fill(0).map((val, index) => index);

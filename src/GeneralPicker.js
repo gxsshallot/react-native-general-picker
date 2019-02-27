@@ -1,42 +1,15 @@
 import React from 'react';
-import { Dimensions, InteractionManager, LayoutAnimation, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import PropTypes from 'prop-types';
+import { InteractionManager, LayoutAnimation, Modal, StyleSheet, Text, TouchableOpacity, View, Dimensions } from 'react-native';
 import GeneralPickCell from './GeneralPickerCell';
 
 export default class extends React.Component {
     /**
      * dataSource：二维数组数据源，一维表示列，二维表示行。
-     * visible：是否可见。
      * onDismiss：取消操作。
      * onFinish：确定操作。
      * selectedItems：选中的数据索引值。
      * onSelectedItemChange：选中项发生改变时。
-     * viewCount：视图中显示的行数，必须为奇数。
-     * renderRow：行视图展示，(rowData, rowId, sectionId) => React.Component
      */
-
-    static propTypes = {
-        dataSource: PropTypes.arrayOf(PropTypes.array),
-        height: PropTypes.number,
-        visible: PropTypes.bool.isRequired,
-        onDismiss: PropTypes.func,
-        onFinish: PropTypes.func,
-        dismissButtonText: PropTypes.string,
-        okButtonText: PropTypes.string,
-        selectedItems: PropTypes.array.isRequired,
-        onSelectedItemChange: PropTypes.func,
-        viewCount: PropTypes.number,
-        renderRow: PropTypes.func,
-    };
-
-    static get defaultProps() {
-        return {
-            dismissButtonText: '取消',
-            okButtonText: '确定',
-            height: 256,
-            viewCount: 5,
-        };
-    }
 
     constructor(props) {
         super(props);
@@ -44,7 +17,7 @@ export default class extends React.Component {
         this.state = {
             dataSource: props.dataSource,
             modalVisible: props.visible,
-            selectedItems: props.selectedItems,
+            selectedItems: props.selectedItems || [],
             frame: {
                 top: Dimensions.get('window').height,
                 right: 0,
@@ -53,7 +26,7 @@ export default class extends React.Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         this.setState({
             dataSource: nextProps.dataSource,
             modalVisible: nextProps.visible,
@@ -61,7 +34,7 @@ export default class extends React.Component {
         });
     }
 
-    componentWillMount() {
+    componentDidMount() {
         InteractionManager.runAfterInteractions(() => {
             setTimeout(() => {
                 this._show();
@@ -74,9 +47,9 @@ export default class extends React.Component {
             modalVisible: false,
         });
         if (isOK) {
-            this.props.onFinish && this.props.onFinish(this.state.selectedItems);
+            this.props.onFinish(this.state.selectedItems);
         }
-        this.props.onDismiss && this.props.onDismiss();
+        this.props.onDismiss();
     };
 
     _show = () => {
@@ -107,16 +80,15 @@ export default class extends React.Component {
     };
 
     _renderPickerItem = (index, rows, dataSource) => {
+        const height = 256;
         const currentValue = this.state.selectedItems[index] || rows[0];
         return (
             <GeneralPickCell
                 key={index}
-                identifier={index}
                 data={rows}
                 totalCount={dataSource.length}
                 value={currentValue}
-                height={this.props.height}
-                viewCount={this.props.viewCount}
+                height={height}
                 onValueChange={this._onSelectionChange.bind(this, index)}
             />
         );
@@ -151,8 +123,8 @@ export default class extends React.Component {
                             <View />
                         </TouchableOpacity>
                         <View style={styles.toolbar}>
-                            {this._renderButton(this.props.dismissButtonText, this._clickButton.bind(this, false))}
-                            {this._renderButton(this.props.okButtonText, this._clickButton.bind(this, true))}
+                            {this._renderButton('取消', this._clickButton.bind(this, false))}
+                            {this._renderButton('确定', this._clickButton.bind(this, true))}
                         </View>
                         <View style={styles.content}>
                             {dataSource.map((rows, index) => this._renderPickerItem(index, rows, dataSource))}
@@ -197,5 +169,9 @@ const styles = StyleSheet.create({
     },
     content: {
         flexDirection: 'row',
+    },
+    picker: {
+        height: 256,
+        backgroundColor: '#ffffff',
     },
 });

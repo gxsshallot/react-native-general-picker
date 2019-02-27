@@ -1,7 +1,2 @@
-.babelrc
-.eslintrc
+.eslintrc.js
 .travis.yml
-yarn.lock
-/__tests__
-/example
-/resource

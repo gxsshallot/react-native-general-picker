@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as CityProvider from './CityProvider';
+import { GeneralPicker } from 'core/common';
 
 export default class extends React.Component {
     static propTypes = {
@@ -25,7 +26,7 @@ export default class extends React.Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         const items = this._getSelectedItems(nextProps.value);
         this.setState({
             selectedItems: items,
@@ -139,7 +140,6 @@ export default class extends React.Component {
 
     render() {
         const {visible, onDismiss} = this.props;
-        const {GeneralPicker} = global.common;
         return (
             <GeneralPicker
                 dataSource={this.state.dataSource}

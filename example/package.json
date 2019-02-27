@@ -1,0 +1,21 @@
+{
+  "name": "react-native-general-picker-example",
+  "version": "0.0.1",
+  "private": true,
+  "description": "General Picker Example App.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start"
+  },
+  "author": "Xiaosong Gao",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "7.0.0",
+    "metro-react-native-babel-preset": "0.48.1"
+  },
+  "dependencies": {
+    "react": "16.5.0",
+    "react-native": "0.57.2",
+    "react-native-general-picker": "../"
+  }
+}
